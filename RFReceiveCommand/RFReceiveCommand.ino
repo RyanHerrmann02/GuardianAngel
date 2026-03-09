@@ -1,3 +1,5 @@
+// Receive Command is the code for the Module attached to the car
+// this will get recreated in the angel main code that will be written
 #include <SPI.h>
 #include <RH_RF95.h>
 #include <LiquidCrystal.h>
