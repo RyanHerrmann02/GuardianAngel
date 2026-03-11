@@ -109,6 +109,7 @@ void timeSelection()
     // Check to see if needing to continue
     if (btnHour == YES)
     {
+      delay(100);
       inMinuteMenu = 1;
       
       // Selection of minutes
