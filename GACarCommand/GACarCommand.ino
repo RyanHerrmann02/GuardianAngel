@@ -4,7 +4,7 @@
     that will be on its own breakout. LoRa will be used
     for the radio and that will work with deep sleep
     deep sleep will be used including a breakout allowing for 
-    it to use ~0.1μA of power iuncluding an interupt from a LoRa
+    it to use ~0.1μA of power including an interupt from a LoRa
     signal. */
 
 // Importing Necessary Libraries
