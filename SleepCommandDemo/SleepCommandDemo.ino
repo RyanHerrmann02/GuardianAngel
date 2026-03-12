@@ -32,6 +32,10 @@ LiquidCrystal lcd(7, 6, 5, 4, 3, 8);
 #define BTN_YES A1
 #define BTN_NO A2
 
+// Define Green, Red, Backlight Pins
+#define RED_ALERT A3
+#define LCD_BACKLIGHT A4
+
 // For button pressing logic, create enum datatype
 enum ButtonPress {NONE, YES, NO};
 
@@ -202,6 +206,35 @@ void timerStart()
     }
   }
 }
+
+// Red Alert
+void alertAll()
+{
+  lcd.setCursor(0,0);
+  lcd.print("ALERT!  ALERT!  ");
+
+  alertMessage("POTENTIAL MISSING PERSON! CALL SEARCH AND RESCUE!", 1, 250);
+
+  digitalWrite(RED_ALERT, HIGH);
+  delay(300);
+  digitalWrite(RED_ALERT, LOW);
+  delay(300);
+}
+
+// Scrolling Alert Message Call
+void alertMessage(const char* message, int row, int delayMs)
+{
+  int msgLen = strlen(message);
+  // Pad with spaces so text slides cleanly off-screen
+  String padded = String("                ") + message + String("                ");
+
+  for (int i = 0; i <= padded.length() - 16; i++)
+  {
+    lcd.setCursor(0, row);
+    lcd.print(padded.substring(i, i + 16));
+    delay(delayMs);
+  }
+}
 // Watchdog Interrupt Service Routine this will get replaced with breakout for less drift
 ISR(WDT_vect)
 {
@@ -252,6 +285,11 @@ void setup() {
   pinMode(BTN_YES, INPUT_PULLUP);
   pinMode(BTN_NO, INPUT_PULLUP);
 
+  pinMode(RED_ALERT, OUTPUT);
+
+  pinMode(LCD_BACKLIGHT, OUTPUT);
+  digitalWrite(LCD_BACKLIGHT, HIGH);
+
   // LCD Initialization
   lcd.begin(16, 2);
   lcdInitializationSetup();
@@ -265,15 +303,16 @@ void setup() {
   delay(1000);
   lcd.clear();
   lcd.noDisplay();
+  digitalWrite(LCD_BACKLIGHT, LOW);
 
   deepSleep();
 
   lcd.display();
+  digitalWrite(LCD_BACKLIGHT, HIGH);
   lcd.setCursor(0,0);
-  lcd.print("Woke Up");
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
- 
+  alertAll();
 }
