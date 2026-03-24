@@ -213,12 +213,16 @@ void alertAll()
   lcd.setCursor(0,0);
   lcd.print("ALERT!  ALERT!  ");
 
-  alertMessage("POTENTIAL MISSING PERSON! CALL SEARCH AND RESCUE!", 1, 250);
-
-  digitalWrite(RED_ALERT, HIGH);
-  delay(300);
-  digitalWrite(RED_ALERT, LOW);
-  delay(300);
+  //alertMessage("POTENTIAL MISSING PERSON! CALL SEARCH AND RESCUE!", 1, 250);
+  lcd.setCursor(0,1);
+  lcd.print("CALL SAR!");
+  while(1)
+  {
+    digitalWrite(RED_ALERT, HIGH);
+    delay(300);
+    digitalWrite(RED_ALERT, LOW);
+    delay(300);
+  }
 }
 
 // Scrolling Alert Message Call
