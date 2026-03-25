@@ -149,6 +149,7 @@ void timeSelection()
 
         else if (btnMin == NO)
         {
+          delay(100);
           inMinuteMenu = 0;
           inHourMenu = 1;
           lcd.clear();
