@@ -41,7 +41,7 @@ Adafruit_NeoPixel pixels1(NUMPIXELS, EMERGENCY_LIGHT_1, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels2(NUMPIXELS, EMERGENCY_LIGHT_2, NEO_GRB + NEO_KHZ800);
 
 // Declare sleep time variables
-int days = 0, hours = 0, minutes = 0, seconds = 20;
+int days, hours, minutes, seconds;
 
 // Declare DateTime formats to use
 DateTime startTime;
@@ -49,6 +49,24 @@ DateTime targetTime;
 
 // For button pressing logic, create enum datatype
 enum ButtonPress {NONE, YES, NO};
+
+// Button Press Checking Logic
+ButtonPress readButtons()
+{
+  if (digitalRead(BTN_YES) == LOW)
+  {
+      delay(50); // debounce: Checks to make sure not noise
+      if (digitalRead(BTN_YES) == LOW)
+          return YES;
+  }
+  if (digitalRead(BTN_NO) == LOW)
+  {
+      delay(50); // debounce 
+      if (digitalRead(BTN_NO) == LOW)
+          return NO;
+  }
+  return NONE;
+}
 
 // Emergency Alert Code
 void emergency()
@@ -103,7 +121,7 @@ void timeSelection()
   bool inHourMenu = 1;
   bool inMinuteMenu = 0;
   int lastHours = -1;
-  int lastMinutes = -1;
+  int lastMinutes = -2;
 
   // Create the hours and minutes to be multipied later
   int hourSelect = 0;
@@ -120,6 +138,7 @@ void timeSelection()
         lcd.print(hourSelect);
         lcd.print(" Hours          ");
         lastHours = hourSelect;
+        delay(100);
       }
 
     ButtonPress btnHour = readButtons();
@@ -195,24 +214,33 @@ void timeSelection()
 
   hours = hourSelect;
   minutes = minuteSelect;
+  days = 0;
+  seconds = 0;
 }
 
-// Button Press Checking Logic
-ButtonPress readButtons()
+// Ask to start timer
+void timerStart()
 {
-  if (digitalRead(BTN_YES) == LOW)
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Start Sleep");
+  lcd.setCursor(0,1);
+  lcd.print("Timer? y/n");
+
+  while(1)
   {
-      delay(50); // debounce: Checks to make sure not noise
-      if (digitalRead(BTN_YES) == LOW)
-          return YES;
+    ButtonPress btn = readButtons();
+    if (btn == YES)
+    {
+      lcd.clear();
+      break;
+    }
+    else if (btn == NO)
+    {
+      lcd.clear();
+      while(1);
+    }
   }
-  if (digitalRead(BTN_NO) == LOW)
-  {
-      delay(50); // debounce 
-      if (digitalRead(BTN_NO) == LOW)
-          return NO;
-  }
-  return NONE;
 }
 
 // Start by Initializing the LCD Screen Startup
@@ -224,7 +252,7 @@ void lcdInitializationSetup()
   {
     lcd.clear();
     lcd.print(i);
-    delay(1000);
+    delay(500);
   }
   lcd.clear();
 }
@@ -237,7 +265,7 @@ void RTCSetup()
 
   // Create start and end times for the breakout
   startTime = rtc.now();
-  targetTime = startTime + TimeSpan(days, hours, minutes, seconds); //To be set by adjusting on display
+  targetTime = startTime + TimeSpan(days, hours, minutes, 0); //To be set by adjusting on display
 
   // Clear alarms
   rtc.clearAlarm(1);
@@ -269,7 +297,7 @@ void goToSleep()
   sleep_disable();
   detachInterrupt(digitalPinToInterrupt(RTC_INT_PIN));
 
-  //lcd.setBacklight(1);
+  lcd.setBacklight(1);
 }
 
 void wakeUp() {
@@ -281,11 +309,11 @@ void setAlarmAndSleep()
 {
   lcd.clear();
   lcd.print("Sleeping...");
-  delay(1000);
+  delay(500);
   lcd.clear();
   lcd.setBacklight(0);
 
-  rtc.setAlarm1(targetTime, DS3231_A1_Second);
+  rtc.setAlarm1(targetTime, DS3231_A1_Date);
   goToSleep();
   rtc.clearAlarm(1);  // clears AFTER waking
   delay(100);
@@ -293,7 +321,7 @@ void setAlarmAndSleep()
 
 void setup() 
 {
-  Serial.begin(9600);
+  //Serial.begin(9600);
 
   // Scroll wheel and button Setup
   pinMode(BTN_YES, INPUT_PULLUP);
@@ -306,19 +334,24 @@ void setup()
   lcd.begin(16,2);
   lcd.setBacklight(1);
   lcdInitializationSetup();
-  Serial.println("LCD Setup..");
+  //Serial.println("LCD Setup..");
 
   timeSelection();
+  timerStart();
 
   RTCSetup();
 
-  Serial.println("RTC Setup...");
+  //Serial.println("RTC Setup...");
 
   // Setup Alarm Lights
   ledLightSetup();
 
   // Start timer and go to sleep
   setAlarmAndSleep();
+
+  lcd.print("EMERGENCY: MP ");
+  lcd.setCursor(0,1);
+  lcd.print("CALL SAR");
 }
 
 void loop() {
