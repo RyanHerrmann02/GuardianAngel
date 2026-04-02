@@ -26,6 +26,7 @@ The following files are included in this repository:
 | `BasicBoardTesting.ino` | "Sandbox" for testing board pulldown transistor testing for utilizing PMOS for board power. |
 | `SleepBreakouTest.ino` | Initial test code for RTC breakout to track time. |
 | `SleepCommandDemo.ino` | Initial test code for UI interfacing with buttons and potentiometer to set time. |
+| `RTCPullDown.ino` | Final testing with RTC breakout to verify SQW Pin pulls down to turn on PMOS |
 
 ## Development Team
 - Ryan Herrmann
