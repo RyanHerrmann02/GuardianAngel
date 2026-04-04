@@ -12,7 +12,7 @@ Advanced Product Design (APD) course Spring 2026 at the University of Colorado B
 ### Power Management
 A core engineering challenge of this project was designing a reliable power sequencing
 system that allows the Arduino to control its own power state while also being woken
-remotely by an RTC alarm — all from a single LiPo battery source with no dedicated
+remotely by an RTC alarm all from a single LiPo battery source with no dedicated
 power management IC.
 
 #### Passive Power Latch (RC Hold Circuit)
@@ -31,7 +31,7 @@ is fully shut off, minimizing system current draw during the wait period. This a
 RTC to continue tracking time and fire a wake alarm via its open-drain SQW pin when the 
 countdown expires. The PMOS transistor, which is responsible for gating battery voltage 
 into the Arduino, requires its gate to be pulled low at battery voltage (~7.4V) to power 
-the board back on — a different domain from the 5V RTC supply. A two-stage discrete 
+the board back on a different domain from the 5V RTC supply. A two-stage discrete 
 transistor circuit was designed to bridge these domains...without connecting them directly. 
 When the SQW pin fires and pulls low, current flows
 through a PNP transistor biased from the 5V rail, whose collector output drives the base
