@@ -30,7 +30,7 @@
 #define KILL_SWITCH 4
 
 // Declare and start Backpack
-Adafruit_LiquidCrystal lcd(0);
+Adafruit_LiquidCrystal lcd(0x20);
 
 // Declare Sleep Breakout
 RTC_DS3231 rtc;
@@ -133,6 +133,10 @@ void ledLightSetup()
 // Create timer Menu
 void timeSelection()
 {
+  // Force I2C to update at slower refresh rate
+  unsigned long lastLCDUpdate = 0;
+  const int LCD_UPDATE_INTERVAL = 200; // only update every 200ms
+
   // Create the menu at the top of the Display and move to the next
   lcd.clear();
   lcd.setCursor(0,0);
@@ -152,19 +156,18 @@ void timeSelection()
   while (inHourMenu)
   {
     // Selection of Hours
-    hourSelect = map(analogRead(SCROLL_PIN), 0, 1023, 0, 24);
+    hourSelect = map(analogRead(SCROLL_PIN), 0, 1023, 0, 23);
 
-      if (hourSelect != lastHours)  // only redraw if value changed
-      {
-        lcd.setCursor(0,1);
-        lcd.print(hourSelect);
-        lcd.print(" Hours          ");
-        lastHours = hourSelect;
-        delay(100);
-      }
-
+    if (hourSelect != lastHours && millis() - lastLCDUpdate > LCD_UPDATE_INTERVAL)  // only redraw if value changed
+    {
+      lcd.setCursor(0,1);
+      lcd.print(hourSelect);
+      lcd.print(" Hours          ");
+      lastHours = hourSelect;
+      lastLCDUpdate = millis();
+    }
+    
     ButtonPress btnHour = readButtons();
-
     // Check to see if needing to continue
     if (btnHour == YES)
     {
@@ -176,12 +179,13 @@ void timeSelection()
       {
         minuteSelect = map(analogRead(SCROLL_PIN), 0, 1023, 0, 59);
 
-        if (minuteSelect != lastMinutes)
+        if (minuteSelect != lastMinutes && millis() - lastLCDUpdate > LCD_UPDATE_INTERVAL)
         {
           lcd.setCursor(0,1);
           lcd.print(minuteSelect);
           lcd.print(" Minutes        ");
           lastMinutes = minuteSelect;
+          lastLCDUpdate = millis();
         }
 
         ButtonPress btnMin = readButtons();
@@ -266,6 +270,7 @@ void RTCSetup()
 {
   // Start the RTC Breakout
   rtc.adjust(DateTime(2000, 1, 1, 0, 0, 0)); // Setting arbitrary start time to start at
+  delay(50);  // Give the RTC a sec to get all setup to avoid calling code and then messing up the setup
 
   // Create start and end times for the breakout
   startTime = rtc.now();
@@ -312,12 +317,19 @@ void setup()
   pinMode(KILL_SWITCH, OUTPUT);
   digitalWrite(KILL_SWITCH, HIGH);
 
-  delay(100);
+  delay(1000);
+  Wire.begin();
+  Wire.setWireTimeout(3000, true);  //Keeping wire timeout for testing if lights off then same issues
   rtc.begin();
 
   // Have LCD Initialize so that know is on
   lcd.begin(16,2);
   lcd.setBacklight(1);
+
+  // Scroll wheel and button Setup
+  pinMode(BTN_YES, INPUT_PULLUP);
+  pinMode(BTN_NO, INPUT_PULLUP);
+  pinMode(BTN_KILL, INPUT_PULLUP);
 
   // If alarm fired, run emergency, if not run setup protocol
   if(rtc.alarmFired(1))
@@ -340,11 +352,6 @@ void setup()
   }
   else
   {
-    // Scroll wheel and button Setup
-    pinMode(BTN_YES, INPUT_PULLUP);
-    pinMode(BTN_NO, INPUT_PULLUP);
-    pinMode(BTN_KILL, INPUT_PULLUP);
-
     lcdInitializationSetup(); // To be removed later this is validation testing so user can see it is on
 
     // Handle the menu logic for time selection
