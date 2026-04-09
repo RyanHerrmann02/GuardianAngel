@@ -48,6 +48,10 @@ consideration for future iterations of the project. This would enable communicat
 between trail indicators and users within certain ranges. Implementation is subject 
 to project timeline and scope constraints.
 
+Developing a single board to handle functions with DS3231 breakout and a microcontroller
+like the ATtiny for logic and pin control. This will also net in better power consumption
+and longer battery life.
+
 ## Repository Contents
 The following files are included in this repository:
 
