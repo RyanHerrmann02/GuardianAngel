@@ -69,7 +69,7 @@ The following files are included in this repository:
 
 | Folder | Description |
 |--------|-------------|
-| `ProtoBoard` | All KiCad and Gerber files for prototyped board using Arduino shield for component integration. Included are images of CAD board renderings and schematic drawings. |
+| `ProtoBoard` | Schematics and Gerber files for prototyped board using Arduino shield for component integration. Included is zip of Gerber drill files. |
 | `FuturePCB` | KiCad files and datasheets for all ICs that would be in a full stand alone board using ATtiny1614 as IC. Includes battery boosting and similar cold start RC latch. |
 
 ## Development Team
