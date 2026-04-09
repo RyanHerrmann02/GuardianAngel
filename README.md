@@ -67,6 +67,11 @@ The following files are included in this repository:
 | `SleepCommandDemo.ino` | Initial test code for UI interfacing with buttons and potentiometer to set time. |
 | `RTCPullDown.ino` | Final testing with RTC breakout to verify SQW pin pulls down to turn on PMOS. |
 
+| Folder | Description |
+|--------|-------------|
+| `ProtoBoard` | All KiCad and Gerber files for prototyped board using Arduino shield for component integration. Included are images of CAD board renderings and schematic drawings. |
+| `FuturePCB` | KiCad files and datasheets for all ICs that would be in a full stand alone board using ATtiny1614 as IC. Includes battery boosting and similar cold start RC latch. |
+
 ## Development Team
 - Ryan Herrmann
 - Duncan Liard
