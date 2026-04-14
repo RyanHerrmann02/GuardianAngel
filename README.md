@@ -57,20 +57,16 @@ The following files are included in this repository:
 
 | File | Description |
 |------|-------------|
-| `GACarCommand.ino` | Primary device firmware handling LCD display, RTC alarm scheduling, and emergency lighting. |
-| `RFSendCommand.ino` | Test file for transmitting LoRa radio commands, using a potentiometer to select color-coded signal states. |
-| `RFReceiveCommand.ino` | Test file for receiving LoRa radio commands, displaying results on an LCD and controlling corresponding LEDs. |
-| `HelloWorld.ino` | Basic LCD I2C display verification test. |
-| `TurnOnDemo.ino` | Basic verification for turn on and check for Alarm state. |
 | `BasicBoardTesting.ino` | "Sandbox" for testing board pulldown transistor testing for utilizing PMOS for board power. |
+| `GACarCommand.ino` | Primary device firmware handling LCD display, RTC alarm scheduling, and emergency lighting. |
+| `HelloWorld.ino` | Basic LCD I2C display verification test. |
+| `ProtoBoard` | Schematics and Gerber files for prototyped board using Arduino shield for component integration. Included is zip of Gerber drill files. |
+| `RFReceiveCommand.ino` | Test file for receiving LoRa radio commands, displaying results on an LCD and controlling corresponding LEDs. |
+| `RFSendCommand.ino` | Test file for transmitting LoRa radio commands, using a potentiometer to select color-coded signal states. |
+| `RTCPullDown.ino` | Final testing with RTC breakout to verify SQW pin pulls down to turn on PMOS. |
 | `SleepBreakouTest.ino` | Initial test code for RTC breakout to track time. |
 | `SleepCommandDemo.ino` | Initial test code for UI interfacing with buttons and potentiometer to set time. |
-| `RTCPullDown.ino` | Final testing with RTC breakout to verify SQW pin pulls down to turn on PMOS. |
-
-| Folder | Description |
-|--------|-------------|
-| `ProtoBoard` | Schematics and Gerber files for prototyped board using Arduino shield for component integration. Included is zip of Gerber drill files. |
-| `FuturePCB` | KiCad files and datasheets for all ICs that would be in a full stand alone board using ATtiny1614 as IC. Includes battery boosting and similar cold start RC latch. |
+| `TurnOnDemo.ino` | Basic verification for turn on and check for Alarm state. |
 
 ## Development Team
 - Ryan Herrmann
@@ -78,5 +74,3 @@ The following files are included in this repository:
 - Jena Knaack
 - Aidan Stamp
 - Riley Apen
-
-##### Circuit lead design by Ryan Herrmann.
