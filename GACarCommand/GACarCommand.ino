@@ -24,13 +24,13 @@
 // Define Buttons
 #define BTN_YES A1
 #define BTN_NO A2
-#define BTN_KILL A3
+#define BTN_KILL A1
 
 // Define KillPin
 #define KILL_SWITCH 4
 
 // Declare and start Backpack
-Adafruit_LiquidCrystal lcd(0x20);
+Adafruit_LiquidCrystal lcd(0);
 
 // Declare Sleep Breakout
 RTC_DS3231 rtc;
@@ -289,7 +289,7 @@ void armAlarm()
   lcd.clear();
   lcd.print("To set alarm,");
   lcd.setCursor(0,1);
-  lcd.print("press ARM Button");
+  lcd.print("press YES Button");
   delay(500);
 
   while(1)
@@ -323,6 +323,8 @@ void setup()
   rtc.begin();
 
   // Have LCD Initialize so that know is on
+  delay(500);
+  lcd.begin(16,2);
   lcd.begin(16,2);
   lcd.setBacklight(1);
 

@@ -1,14 +1,24 @@
-#define KILL_SWITCH 6
-#define BUTTON A4
+#include <Wire.h>
 
 void setup() {
-  pinMode(KILL_SWITCH, OUTPUT);
-  pinMode(BUTTON, INPUT_PULLUP);
-  digitalWrite(KILL_SWITCH, HIGH);
+  Serial.begin(9600);
+  Wire.begin();
+  delay(1000);
+
+  Serial.println("Scanning I2C bus...");
+
+  for (byte address = 1; address < 127; address++) {
+    Wire.beginTransmission(address);
+    Serial.println("Checking...");
+    byte error = Wire.endTransmission();
+
+    if (error == 0) {
+      Serial.print("Device found at address 0x");
+      Serial.println(address, HEX);
+    }
+  }
+
+  Serial.println("Scan complete.");
 }
 
-void loop() {
-  if (digitalRead(BUTTON) == LOW) {
-    digitalWrite(KILL_SWITCH, LOW);
-  }
-}
+void loop() {}

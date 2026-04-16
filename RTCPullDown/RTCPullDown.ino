@@ -10,10 +10,10 @@
 #include <RTClib.h>
 
 // Define Kill Pin and buttons
-#define BTN_KILL A3
+#define BTN_KILL A1
 #define KILL_SWITCH 4
-#define RED 5
-#define GREEN 6
+#define RED 6
+#define GREEN 5
 
 // Declare RTC breakout
 RTC_DS3231 rtc;
