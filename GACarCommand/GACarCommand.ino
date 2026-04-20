@@ -130,7 +130,6 @@ void ledLightSetup()
   timer will be primed for the user to press the button kill
   switch
 -----------------------------------------------------------*/
-// Create timer Menu
 void timeSelection()
 {
   // Force I2C to update at slower refresh rate
@@ -144,73 +143,72 @@ void timeSelection()
   lcd.setCursor(0,1);
 
   // Menu Switching
-  bool inHourMenu = 1;
-  bool inMinuteMenu = 0;
+  bool inDayMenu = 1;
+  bool inHourMenu = 0;
+  int lastDays = -1;
   int lastHours = -1;
-  int lastMinutes = -1;
 
-  // Create the hours and minutes to be set on RTC
+  // Create the days and hours to be set on RTC
+  int daySelect = 0;
   int hourSelect = 0;
-  int minuteSelect = 0;
 
-  while (inHourMenu)
+  while (inDayMenu)
   {
-    // Selection of Hours
-    hourSelect = map(analogRead(SCROLL_PIN), 0, 1023, 0, 23);
+    // Selection of Days
+    daySelect = map(analogRead(SCROLL_PIN), 0, 1023, 0, 20);
 
-    if (hourSelect != lastHours && millis() - lastLCDUpdate > LCD_UPDATE_INTERVAL)  // only redraw if value changed
+    if (daySelect != lastDays && millis() - lastLCDUpdate > LCD_UPDATE_INTERVAL)
     {
       lcd.setCursor(0,1);
-      lcd.print(hourSelect);
-      lcd.print(" Hours          ");
-      lastHours = hourSelect;
+      lcd.print(daySelect);
+      lcd.print(" Days           ");
+      lastDays = daySelect;
       lastLCDUpdate = millis();
     }
     
-    ButtonPress btnHour = readButtons();
-    // Check to see if needing to continue
-    if (btnHour == YES)
+    ButtonPress btnDay = readButtons();
+    if (btnDay == YES)
     {
       delay(100);
-      inMinuteMenu = 1;
+      inHourMenu = 1;
       
-      // Selection of minutes
-      while(inMinuteMenu)
+      // Selection of Hours
+      while(inHourMenu)
       {
-        minuteSelect = map(analogRead(SCROLL_PIN), 0, 1023, 0, 59);
+        hourSelect = map(analogRead(SCROLL_PIN), 0, 1023, 0, 23);
 
-        if (minuteSelect != lastMinutes && millis() - lastLCDUpdate > LCD_UPDATE_INTERVAL)
+        if (hourSelect != lastHours && millis() - lastLCDUpdate > LCD_UPDATE_INTERVAL)
         {
           lcd.setCursor(0,1);
-          lcd.print(minuteSelect);
-          lcd.print(" Minutes        ");
-          lastMinutes = minuteSelect;
+          lcd.print(hourSelect);
+          lcd.print(" Hours          ");
+          lastHours = hourSelect;
           lastLCDUpdate = millis();
         }
 
-        ButtonPress btnMin = readButtons();
+        ButtonPress btnHour = readButtons();
 
-        if (btnMin == YES)
+        if (btnHour == YES)
         {
           lcd.clear();
           lcd.setCursor(0,0);
           lcd.print("Time Selected");
           lcd.setCursor(0,1);
+          lcd.print(daySelect);
+          lcd.print("d ");
           lcd.print(hourSelect);
-          lcd.print("h ");
-          lcd.print(minuteSelect);
-          lcd.print("m");
+          lcd.print("h");
           delay(3000);
-          inMinuteMenu = 0;
           inHourMenu = 0;
+          inDayMenu = 0;
           break;
         }
 
-        else if (btnMin == NO)
+        else if (btnHour == NO)
         {
           delay(100);
-          inMinuteMenu = 0;
-          inHourMenu = 1;
+          inHourMenu = 0;
+          inDayMenu = 1;
           lcd.clear();
           lcd.setCursor(0,0);
           lcd.print("Time Selection");
@@ -220,10 +218,9 @@ void timeSelection()
     }
   }
 
+  days = daySelect;
   hours = hourSelect;
-  minutes = minuteSelect;
-
-  days = 0; // Days selection to be added in later
+  minutes = 0;
 }
 
 // Ask to start timer
@@ -273,7 +270,7 @@ void RTCSetup()
 
   // Create start and end times for the breakout
   startTime = rtc.now();
-  targetTime = startTime + TimeSpan(days, hours, minutes, 0); //To be set by adjusting on display
+  targetTime = startTime + TimeSpan(days, hours, 0, 0); //To be set by adjusting on display
 
   // Clear alarms
   rtc.clearAlarm(1);
