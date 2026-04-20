@@ -1,21 +1,23 @@
-#include <Adafruit_LiquidCrystal.h>
 #include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 
-Adafruit_LiquidCrystal lcd(0);
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 void setup() {
   
   Serial.begin(9600);
-  // Wire.begin();
+  delay(1000);
+  Wire.begin();
   
-  // Serial.println("Scanning...");
-  // for (byte addr = 1; addr < 127; addr++) {
-  //   Wire.beginTransmission(addr);
-  //   if (Wire.endTransmission() == 0) {
-  //     Serial.print("Found device at: 0x");
-  //     Serial.println(addr, HEX);
-  //   }
-  // }
-  // Serial.println("Done.");
+  Serial.println("Scanning...");
+  for (byte addr = 1; addr < 127; addr++) {
+    Serial.println(addr);
+    Wire.beginTransmission(addr);
+    if (Wire.endTransmission() == 0) {
+      Serial.print("Found device at: 0x");
+      Serial.println(addr, HEX);
+    }
+  }
+  Serial.println("Done.");
   // put your setup code here, to run once:
   lcd.begin(16,2);
   lcd.setBacklight(1);

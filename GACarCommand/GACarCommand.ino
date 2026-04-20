@@ -7,7 +7,7 @@
     on the LCD display as well as Neopixel LEDs, and RTC for timer handling.*/
 
 // Importing Necessary Libraries
-#include <Adafruit_LiquidCrystal.h>
+#include <LiquidCrystal_I2C.h>
 #include <Wire.h>
 #include <RTClib.h>
 #include <Adafruit_NeoPixel.h>
@@ -30,7 +30,7 @@
 #define KILL_SWITCH 4
 
 // Declare and start Backpack
-Adafruit_LiquidCrystal lcd(0);
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 // Declare Sleep Breakout
 RTC_DS3231 rtc;
@@ -231,7 +231,7 @@ bool timerStart()
 {
   lcd.clear();
   lcd.setCursor(0,0);
-  lcd.print("Set Alarm?");
+  lcd.print("Time selected?");
   lcd.setCursor(0,1);
   lcd.print("Yes/No");
 
@@ -254,17 +254,16 @@ bool timerStart()
 // Start by Initializing the LCD Screen Startup
 void lcdInitializationSetup()
 {
-  lcd.print("Starting...");
-  delay(1000);
-  for (int i = 3; i>0; i--)
+  for (int i = 0; i <= 3; i++)
   {
-    lcd.clear();
-    lcd.print(i);
+    lcd.setCursor(0,0);
+    lcd.print("Starting");
+    for (int j = 0; j < i; j++) lcd.print(".");
+    lcd.print("        "); // clear trailing characters
     delay(500);
   }
   lcd.clear();
 }
-
 // Setup and start the timer for alarm
 void RTCSetup()
 {
@@ -323,10 +322,10 @@ void setup()
   rtc.begin();
 
   // Have LCD Initialize so that know is on
-  delay(500);
-  lcd.begin(16,2);
-  lcd.begin(16,2);
-  lcd.setBacklight(1);
+  delay(1000);
+  lcd.init();
+  lcd.init();
+  lcd.backlight();
 
   // Scroll wheel and button Setup
   pinMode(BTN_YES, INPUT_PULLUP);
